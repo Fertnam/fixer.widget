@@ -1,0 +1,51 @@
+/* Сброс стандартных стилей */
+@import "~normalize.css";
+
+/* Загрузка основного шрифта */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/* Стили слайдера */
+@import "~@splidejs/vue-splide/dist/css/splide-core.min.css";
+
+/* Определяем глобальные переменные */
+:root {
+    --white: #fff;
+    --black: #2B2D33;
+
+    --gray-50: #EFEFEF;
+    --gray-100: #D9D9D9;
+    --gray-200: #B9B9B9;
+    --gray-300: #787878;
+    
+    --yellow-50: #FFE782;
+    --yellow-100: #CCAE68;
+    
+    --font-size: 14px;
+    --font-family: Roboto, sans-serif;
+
+    --transition-duration: 350ms;
+}
+
+/* Глобальные стили */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
