@@ -1,19 +1,31 @@
 <template>
     <v-card :class="$style.currencyExchangeRateItem">
         <div :class="$style.from">
-            <span :class="$style.count">5</span>
-            <span :class="$style.currency">EUR =</span>
+            <span :class="$style.count" v-text="from.count" />
+            <span :class="$style.currency" v-text="from.currency" />
         </div>
 
         <div :class="$style.to">
-            <span :class="$style.count">409,37</span>
-            <span :class="$style.currency">RUB</span>
+            <span :class="$style.count" v-text="to.count" />
+            <span :class="$style.currency" v-text="to.currency" />
         </div>
     </v-card>
 </template>
 
 <script setup>
+import { defineProps } from 'vue'
 import VCard from './ui/VCard.vue'
+
+const props = defineProps({
+    from: {
+        type: Object,
+        required: true,
+    },
+    to: {
+        type: Object,
+        required: true,
+    },
+})
 </script>
 
 <style lang="scss" module>

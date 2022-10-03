@@ -1,30 +1,57 @@
 <template>
     <div :class="$style.currencyExchangeRate">
-        <div :class="$style.items">
-            <currency-exchange-rate-item v-for="index in 24" :key="index" />
-        </div>
+        <div :class="$style.loading" v-if="loading">Загрузка...</div>
 
-        <div :class="$style.pagination">
-            <v-button disabled>
-                <fa-icon icon="chevron-left" />
-                Назад
-            </v-button>
+        <template v-else>
+            <div :class="$style.items">
+                <currency-exchange-rate-item
+                    v-for="rate in rates"
+                    :from="{ count: 1, currency: baseCurrency }"
+                    :to="rate"
+                    :key="rate"
+                />
+            </div>
 
-            <v-button>
-                Далее
-                <fa-icon icon="chevron-right" />
-            </v-button>
-        </div>
+            <div :class="$style.pagination">
+                <v-button disabled>
+                    <fa-icon icon="chevron-left" />
+                    Назад
+                </v-button>
+
+                <v-button>
+                    Далее
+                    <fa-icon icon="chevron-right" />
+                </v-button>
+            </div>
+        </template>
     </div>
 </template>
 
 <script setup>
+import { defineProps, toRef } from 'vue'
 import CurrencyExchangeRateItem from './CurrencyExchangeRateItem.vue'
 import VButton from './ui/VButton.vue'
+import { useCurrencyExchangeRate } from '../composables/use-currency-exchange-rate'
+
+const props = defineProps({
+    baseCurrency: {
+        type: String,
+        required: true,
+    },
+})
+
+// * Exchange Rate
+const baseCurrencyRef = toRef(props, 'baseCurrency')
+const { rates, loading } = useCurrencyExchangeRate(baseCurrencyRef)
 </script>
 
 <style lang="scss" module>
 .currencyExchangeRate {
+    & > .loading {
+        text-align: center;
+        font-size: var(--text-lg);
+    }
+
     & > .items {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

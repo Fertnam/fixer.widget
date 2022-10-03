@@ -5,16 +5,20 @@
         </div>
 
         <div :class="$style.slider">
-            <splide ref="slider" :options="sliderOptions">
+            <div v-if="loading" :class="$style.loading">Загрузка...</div>
+
+            <splide v-else ref="slider" :options="sliderOptions">
                 <splide-slide
-                    v-for="currency in currencies"
-                    :key="currency"
+                    v-for="(currency, abb) in currencies"
+                    :key="abb"
+                    :title="currency"
                     :class="[
                         $style.item,
-                        { [$style.active]: currency === 'AED' },
+                        { [$style.active]: activeCurrency === abb },
                     ]"
+                    @click="activeCurrency = abb"
                 >
-                    {{ currency }}
+                    {{ abb }}
                 </splide-slide>
             </splide>
         </div>
@@ -26,17 +30,32 @@
 </template>
 
 <script setup>
-import { defineProps, reactive, ref, onMounted } from 'vue'
+import {
+    defineProps,
+    defineEmits,
+    reactive,
+    ref,
+    onMounted,
+    computed,
+} from 'vue'
+
 import { Splide, SplideSlide } from '@splidejs/vue-splide'
-import axios from 'axios'
+import { useCurrencies } from '../composables/use-currencies'
 
 const props = defineProps({
+    modelValue: {
+        type: String,
+        default: null,
+    },
     as: {
         type: String,
-        default: 'div',
+        default: 'nav',
     },
 })
 
+const emit = defineEmits(['update:modelValue'])
+
+// * Slider
 const sliderOptions = reactive({
     perPage: 7,
     rewind: true,
@@ -51,21 +70,32 @@ const sliderOptions = reactive({
 
 const slider = ref()
 
-const prev = () => slider.value.go('<')
-const next = () => slider.value.go('>')
+const prev = () => slider.value?.go('<')
+const next = () => slider.value?.go('>')
 
-const currencies = ref([])
+// * Currency
+const { currencies, loading, fetch } = useCurrencies()
+
+const activeCurrency = computed({
+    get() {
+        return props.modelValue
+    },
+    set(value) {
+        emit('update:modelValue', value)
+    },
+})
+
+const initActiveCurrency = () => {
+    activeCurrency.value = Object.keys(currencies.value)[0]
+}
 
 onMounted(async () => {
-    const {
-        data: { symbols },
-    } = await axios.get('https://api.apilayer.com/fixer/symbols', {
-        headers: {
-            apikey: 'pXvXQ6at6MRMLBdMGYOpXaWSqHNsHsYF',
-        },
-    })
-
-    currencies.value = Object.keys(symbols)
+    try {
+        await fetch()
+        initActiveCurrency()
+    } catch (e) {
+        console.error(e)
+    }
 })
 </script>
 
@@ -78,12 +108,18 @@ onMounted(async () => {
         flex: 1 1 auto;
         overflow: hidden;
 
+        .loading,
         .item {
             padding: 1rem 0;
-            border-radius: var(--rounded) var(--rounded) 0 0;
-
             text-align: center;
+        }
 
+        .loading {
+            user-select: none;
+        }
+
+        .item {
+            border-radius: var(--rounded) var(--rounded) 0 0;
             cursor: pointer;
 
             &.active {

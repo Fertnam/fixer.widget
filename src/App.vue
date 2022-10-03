@@ -1,26 +1,37 @@
 <template>
     <div :class="$style.app">
         <header :class="$style.header">
-            <h1 :class="$style.title">Курс EUR на 2020.01.19</h1>
-            <currency-menu as="nav" />
+            <h1 :class="$style.title" v-text="title" />
+            <currency-menu v-model="baseCurrency" />
         </header>
 
         <main :class="$style.main">
             <div :class="$style.controls">
                 <v-input type="date" />
-                <currency-count currency="EUR" />
+                <currency-count :currency="baseCurrency" />
             </div>
 
-            <currency-exchange-rate />
+            <currency-exchange-rate :base-currency="baseCurrency" />
         </main>
     </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 import VInput from './components/ui/VInput.vue'
 import CurrencyMenu from './components/CurrencyMenu.vue'
 import CurrencyCount from './components/CurrencyCount.vue'
 import CurrencyExchangeRate from './components/CurrencyExchangeRate.vue'
+
+const baseCurrency = ref(null)
+
+const title = computed(() => {
+    if (baseCurrency.value) {
+        return `Курс ${baseCurrency.value} на 2020.01.19`
+    }
+
+    return 'Выберите валюту'
+})
 </script>
 
 <style lang="scss" module>

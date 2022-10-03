@@ -13,6 +13,7 @@ module.exports = {
     },
     rules: {
         indent: ['error', 4],
+        'no-unused-vars': 'warn',
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'prettier/prettier': [
