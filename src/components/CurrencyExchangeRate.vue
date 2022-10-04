@@ -5,7 +5,7 @@
         <template v-else>
             <div :class="$style.items">
                 <currency-exchange-rate-item
-                    v-for="rate in rates"
+                    v-for="rate in ratesFragment"
                     :from="from"
                     :to="rate"
                     :key="rate"
@@ -13,12 +13,12 @@
             </div>
 
             <div :class="$style.pagination">
-                <v-button disabled>
+                <v-button :disabled="inStart" @click="prev">
                     <fa-icon icon="chevron-left" />
                     Назад
                 </v-button>
 
-                <v-button>
+                <v-button :disabled="inEnd" @click="next">
                     Далее
                     <fa-icon icon="chevron-right" />
                 </v-button>
@@ -32,6 +32,7 @@ import { defineProps, toRef, computed } from 'vue'
 import CurrencyExchangeRateItem from './CurrencyExchangeRateItem.vue'
 import VButton from './ui/VButton.vue'
 import { useCurrencyExchangeRate } from '../composables/use-currency-exchange-rate'
+import { usePagination } from '../composables/use-pagination'
 
 const props = defineProps({
     baseCurrency: {
@@ -40,7 +41,15 @@ const props = defineProps({
     },
     baseCurrencyCount: {
         type: Number,
-        default: 1,
+        required: true,
+    },
+    date: {
+        type: String,
+        required: true,
+    },
+    perPage: {
+        type: Number,
+        default: 12,
     },
 })
 
@@ -52,6 +61,15 @@ const from = computed(() => ({
     currency: props.baseCurrency,
     count: props.baseCurrencyCount,
 }))
+
+// * Pagination
+const {
+    inStart,
+    inEnd,
+    itemsFragment: ratesFragment,
+    prev,
+    next,
+} = usePagination(rates, props.perPage)
 </script>
 
 <style lang="scss" module>

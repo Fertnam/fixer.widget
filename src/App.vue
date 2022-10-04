@@ -18,6 +18,7 @@
             <currency-exchange-rate
                 :base-currency="baseCurrency"
                 :base-currency-count="baseCurrencyCount"
+                :date="exchangeRateDate"
             />
         </main>
     </div>
