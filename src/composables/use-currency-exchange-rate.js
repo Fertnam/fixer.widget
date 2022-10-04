@@ -15,9 +15,9 @@ export function useCurrencyExchangeRate(baseCurrency) {
                 data: { rates: remoteRates = [] },
             } = await api.value.get('/latest')
 
-            rates.value = Object.keys(remoteRates).map((rate) => ({
-                currency: rate,
-                count: remoteRates[rate],
+            rates.value = Object.keys(remoteRates).map((abb) => ({
+                currency: abb,
+                rate: remoteRates[abb],
             }))
         } finally {
             loading.value = false

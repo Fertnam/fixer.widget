@@ -44,8 +44,8 @@ import { useCurrencies } from '../composables/use-currencies'
 
 const props = defineProps({
     modelValue: {
-        type: String,
-        default: null,
+        type: [String, null],
+        required: true,
     },
     as: {
         type: String,

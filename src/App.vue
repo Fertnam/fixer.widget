@@ -7,11 +7,18 @@
 
         <main :class="$style.main">
             <div :class="$style.controls">
-                <v-input type="date" />
-                <currency-count :currency="baseCurrency" />
+                <v-input v-model="exchangeRateDate" type="date" required />
+
+                <currency-count
+                    v-model="baseCurrencyCount"
+                    :currency="baseCurrency"
+                />
             </div>
 
-            <currency-exchange-rate :base-currency="baseCurrency" />
+            <currency-exchange-rate
+                :base-currency="baseCurrency"
+                :base-currency-count="baseCurrencyCount"
+            />
         </main>
     </div>
 </template>
@@ -24,10 +31,12 @@ import CurrencyCount from './components/CurrencyCount.vue'
 import CurrencyExchangeRate from './components/CurrencyExchangeRate.vue'
 
 const baseCurrency = ref(null)
+const baseCurrencyCount = ref(1)
+const exchangeRateDate = ref(new Date().toISOString().slice(0, 10))
 
 const title = computed(() => {
     if (baseCurrency.value) {
-        return `Курс ${baseCurrency.value} на 2020.01.19`
+        return `Курс ${baseCurrency.value} на ${exchangeRateDate.value}`
     }
 
     return 'Выберите валюту'

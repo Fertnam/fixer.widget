@@ -6,14 +6,14 @@
         </div>
 
         <div :class="$style.to">
-            <span :class="$style.count" v-text="to.count" />
+            <span :class="$style.rate" v-text="toRate" />
             <span :class="$style.currency" v-text="to.currency" />
         </div>
     </v-card>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, computed } from 'vue'
 import VCard from './ui/VCard.vue'
 
 const props = defineProps({
@@ -26,11 +26,14 @@ const props = defineProps({
         required: true,
     },
 })
+
+const toRate = computed(() => (props.to.rate * props.from.count).toFixed(2))
 </script>
 
 <style lang="scss" module>
 .currencyExchangeRateItem {
     font-weight: 300;
+    overflow-x: auto;
 
     & > .from {
         margin-bottom: 1.5rem;
@@ -47,7 +50,7 @@ const props = defineProps({
     }
 
     & > .to {
-        & > .count {
+        & > .rate {
             margin-right: 0.4rem;
             font-size: var(--text-2xl);
         }

@@ -6,7 +6,7 @@
             <div :class="$style.items">
                 <currency-exchange-rate-item
                     v-for="rate in rates"
-                    :from="{ count: 1, currency: baseCurrency }"
+                    :from="from"
                     :to="rate"
                     :key="rate"
                 />
@@ -28,21 +28,30 @@
 </template>
 
 <script setup>
-import { defineProps, toRef } from 'vue'
+import { defineProps, toRef, computed } from 'vue'
 import CurrencyExchangeRateItem from './CurrencyExchangeRateItem.vue'
 import VButton from './ui/VButton.vue'
 import { useCurrencyExchangeRate } from '../composables/use-currency-exchange-rate'
 
 const props = defineProps({
     baseCurrency: {
-        type: String,
+        type: [String, null],
         required: true,
+    },
+    baseCurrencyCount: {
+        type: Number,
+        default: 1,
     },
 })
 
 // * Exchange Rate
 const baseCurrencyRef = toRef(props, 'baseCurrency')
 const { rates, loading } = useCurrencyExchangeRate(baseCurrencyRef)
+
+const from = computed(() => ({
+    currency: props.baseCurrency,
+    count: props.baseCurrencyCount,
+}))
 </script>
 
 <style lang="scss" module>
